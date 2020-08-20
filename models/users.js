@@ -3,6 +3,9 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("./tasks");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const userSchema = new mongoose.Schema(
   {

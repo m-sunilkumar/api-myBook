@@ -3,6 +3,9 @@ const userRoutes = require("./routes/users");
 const tasksRoutes = require("./routes/tasks");
 
 require("./db/mongoose");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const app = express();
 app.use(express.json());

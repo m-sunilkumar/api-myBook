@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/users");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const auth = async (req, res, next) => {
   try {

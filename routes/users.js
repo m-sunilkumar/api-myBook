@@ -14,13 +14,13 @@ const errorHandler = (err, req, res, next) => {
 //routes start here
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
-
   try {
     await user.save();
     sendWelcomeEmail(user.email, user.name);
     const token = await user.generateAuthToken();
     res.status(201).send({ user, token });
   } catch (e) {
+    console.log("user",e)
     res.status(400).send(e);
   }
 });
@@ -31,7 +31,9 @@ router.post("/users/login", async (req, res) => {
       req.body.email,
       req.body.password
     );
+
     const token = await user.generateAuthToken();
+
     res.send({ user, token });
   } catch (e) {
     res.status(400).send();
@@ -40,7 +42,7 @@ router.post("/users/login", async (req, res) => {
 
 router.post("/users/logout", auth, async (req, res) => {
   try {
-    req.user.tokens = req.user.tokens.filter(token => {
+    req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token;
     });
     await req.user.save();
@@ -68,7 +70,7 @@ router.get("/users/me", auth, async (req, res) => {
 router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email", "password", "age"];
-  const isValidOperation = updates.every(update =>
+  const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   );
 
@@ -77,7 +79,7 @@ router.patch("/users/me", auth, async (req, res) => {
   }
 
   try {
-    updates.forEach(update => (req.user[update] = req.body[update]));
+    updates.forEach((update) => (req.user[update] = req.body[update]));
     await req.user.save();
     res.send(req.user);
   } catch (e) {
@@ -96,14 +98,14 @@ router.delete("/users/me", auth, async (req, res) => {
 });
 const upload = multer({
   limits: {
-    fileSize: 10000000
+    fileSize: 10000000,
   },
   fileFilter(req, file, cb) {
     if (!file.originalname.match(/\.(jpeg|png|jpg)$/)) {
       return cb(new Error("File type should be of jpg/jpeg/png type"));
     }
     cb(undefined, true);
-  }
+  },
 });
 
 router.post(
