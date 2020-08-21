@@ -1,6 +1,6 @@
 phases:
     install:
       commands:
-      - npm install
+      - npm install --unsafe-perm
 
       - pip install --upgrade awscli
